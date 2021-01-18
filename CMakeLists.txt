@@ -48,6 +48,7 @@ add_library(fuzzerlib STATIC
   server.h
   thread.cpp
   thread.h
+  tnefutils.c
   )
 
 add_dependencies(fuzzerlib tinyinst)

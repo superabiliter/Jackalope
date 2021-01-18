@@ -24,6 +24,7 @@ class Sample {
 public:
   char *bytes;
   size_t size;
+  size_t raw_size;
 
   Sample();
   ~Sample();

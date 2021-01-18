@@ -20,6 +20,7 @@ limitations under the License.
 #include <stdlib.h>
 #include <string.h>
 #include "sample.h"
+#include "tnefutils.h"
 
 
 Sample::Sample() {
@@ -51,7 +52,9 @@ int Sample::Save(const char * filename) {
   if(!fp) {
     return 0;
   }
-  fwrite(bytes, size, 1, fp);
+  char *eml = NULL;
+  raw_size = TnefPacker::TnefPacking(bytes,size,eml);
+  fwrite(eml, raw_size, 1, fp);
   fclose(fp);
   return 1;
 }
@@ -67,12 +70,13 @@ int Sample::Load(const char * filename) {
     return 0;
   }
   fseek(fp,0,SEEK_END);
-  size = ftell(fp);
+  raw_size = ftell(fp);
   fseek(fp,0,SEEK_SET);
-  if(bytes) free(bytes);
-  bytes = (char *)malloc(size);
-  fread(bytes, size, 1, fp);
+  char *eml = (char *)malloc(raw_size);
+  fread(eml, raw_size, 1, fp);
   fclose(fp);
+  size = TnefPacker::TnefUnpacking(eml,raw_size,bytes);
+  free(eml);
   return 1;
 }
 
